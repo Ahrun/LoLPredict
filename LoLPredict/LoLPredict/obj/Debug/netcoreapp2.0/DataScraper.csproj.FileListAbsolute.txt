@@ -1,0 +1,12 @@
+C:\Users\Ahrun\source\repos\LoLPredict\LoLPredict\LoLPredict\bin\Debug\netcoreapp2.0\DataScraper.deps.json
+C:\Users\Ahrun\source\repos\LoLPredict\LoLPredict\LoLPredict\bin\Debug\netcoreapp2.0\DataScraper.runtimeconfig.json
+C:\Users\Ahrun\source\repos\LoLPredict\LoLPredict\LoLPredict\bin\Debug\netcoreapp2.0\DataScraper.runtimeconfig.dev.json
+C:\Users\Ahrun\source\repos\LoLPredict\LoLPredict\LoLPredict\bin\Debug\netcoreapp2.0\DataScraper.dll
+C:\Users\Ahrun\source\repos\LoLPredict\LoLPredict\LoLPredict\bin\Debug\netcoreapp2.0\DataScraper.pdb
+C:\Users\Ahrun\source\repos\LoLPredict\LoLPredict\LoLPredict\obj\Debug\netcoreapp2.0\DataScraper.csproj.CoreCompileInputs.cache
+C:\Users\Ahrun\source\repos\LoLPredict\LoLPredict\LoLPredict\obj\Debug\netcoreapp2.0\DataScraper.AssemblyInfoInputs.cache
+C:\Users\Ahrun\source\repos\LoLPredict\LoLPredict\LoLPredict\obj\Debug\netcoreapp2.0\DataScraper.AssemblyInfo.cs
+C:\Users\Ahrun\source\repos\LoLPredict\LoLPredict\LoLPredict\obj\Debug\netcoreapp2.0\DataScraper.dll
+C:\Users\Ahrun\source\repos\LoLPredict\LoLPredict\LoLPredict\obj\Debug\netcoreapp2.0\DataScraper.pdb
+C:\Users\Ahrun\source\repos\LoLPredict\LoLPredict\LoLPredict\bin\Debug\netcoreapp2.0\DataScraper.dll.config
+C:\Users\Ahrun\source\repos\LoLPredict\LoLPredict\LoLPredict\obj\Debug\netcoreapp2.0\DataScraper.csprojResolveAssemblyReference.cache
