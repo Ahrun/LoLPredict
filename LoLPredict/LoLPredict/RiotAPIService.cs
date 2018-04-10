@@ -1,47 +1,30 @@
-﻿using RiotSharp;
-using RiotSharp.LeagueEndpoint;
-using RiotSharp.MatchEndpoint;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using System.Net.Http;
 
 namespace DataScraper
 {
     public class RiotAPIService
     {
-        RiotApi _riotApi;
         int limiter = 0;
+        private static HttpClient _httpClient = new HttpClient();
+
+        private string challengerLeagues = "/lol/league/v3/challengerleagues/by-queue/{queue}";
+        private string masterLeagues = "/lol/league/v3/masterleagues/by-queue/{queue}";
+
+        private string matchListEndpoint = "/lol/match/v3/matchlists/by-account/{accountId}";
+        private string recentMatchListEndpoint = "/lol/match/v3/matchlists/by-account/{accountId}/recent";
+        private string matchEndpoint = "/lol/match/v3/matches/{matchId}";
+
+        private string summonerEndpoint = "/lol/summoner/v3/summoners/{summonerId}";
         public RiotAPIService(string apiKey)
         {
-            _riotApi = RiotApi.GetDevelopmentInstance(apiKey);
+            _httpClient.BaseAddress = new Uri("https://na1.api.riotgames.com");
+            _httpClient.DefaultRequestHeaders.Add("api_key", apiKey);
         }
-
-        public List<LeaguePosition> GetChallengerLeague()
-        {
-            RateLimiter();
-            var challenger = _riotApi.GetChallengerLeague(RiotSharp.Misc.Region.na, "RANKED_SOLO_5x5");
-            return challenger.Entries;
-        }
-
-        public List<LeaguePosition> GetMasterLeague()
-        {
-            RateLimiter();
-            var master = _riotApi.GetMasterLeague(RiotSharp.Misc.Region.na, "RANKED_SOLO_5x5");
-            return master.Entries;
-        }
-
-        public List<MatchReference> GetRecentMatches(LeaguePosition leaguePosition)
-        {
-            RateLimiter();
-            var accountId = _riotApi.GetSummonerBySummonerId(RiotSharp.Misc.Region.na, Int64.Parse(leaguePosition.PlayerOrTeamId)).AccountId;
-            RateLimiter();
-            return _riotApi.GetRecentMatches(RiotSharp.Misc.Region.na, accountId);
-        }
-
-        public Match GetMatch(long matchId)
-        {
-            RateLimiter();
-            return _riotApi.GetMatch(RiotSharp.Misc.Region.na, matchId);
-        }
+        //TODO: Implement API calls with expected optional parameters
+        //Build models for return types of all methods
+        //Write to SQLite Database for data storage
+        //Determine size of dataset needed
 
         private void RateLimiter()
         {

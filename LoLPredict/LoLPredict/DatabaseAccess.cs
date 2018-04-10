@@ -4,7 +4,8 @@ using System.Text;
 
 namespace DataScraper
 {
-    class DatabaseAccess
+    public class DatabaseAccess
     {
+        //TODO: This
     }
 }
