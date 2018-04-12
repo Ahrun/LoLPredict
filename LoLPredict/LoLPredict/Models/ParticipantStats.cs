@@ -4,7 +4,8 @@ using System.Text;
 
 namespace DataScraper.Models
 {
-    public class PlayerJSON
+    public class ParticipantStats
     {
+        public long physicalDamageDealt { get; set; }
     }
 }

@@ -4,7 +4,9 @@ using System.Text;
 
 namespace DataScraper.Models
 {
-    public class MatchJSON
+    public class TeamBans
     {
+        public int pickTurn { get; set; }
+        public int championId { get; set; }
     }
 }
