@@ -48,7 +48,11 @@ namespace DataScraper
 
         public void WriteMatch(MatchModel match)
         {
-
+            _sqlConnection.Open();
+            string insertMatchModelSQL = "INSERT INTO match(matchId, summoner1, summoner2, summoner3, summoner4, summoner5, summoner6, summoner7, summoner8, summoner9, summoner10, " +
+                "champion1, champion2, champion3, champion4, champion5, champion6, champion7, champion8, champion9, champion10, " + 
+                "ban1, ban2, ban3, ban4, ban5, ban6, ban7, ban8, ban9, ban10, " + 
+                "sideWin"
         }
 
         public void WritePlayerStats(PlayerStats playerStats)
