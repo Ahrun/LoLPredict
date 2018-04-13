@@ -4,3 +4,5 @@
 
 /.vs
 /LoLPredict/.vs/LoLPredict/v15
+obj
+bin
