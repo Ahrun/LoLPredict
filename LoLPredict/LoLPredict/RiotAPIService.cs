@@ -30,33 +30,41 @@ namespace DataScraper
         //Build models for return types of all methods
         //Write to SQLite Database for data storage
         //Determine size of dataset needed
-        public async Task<IEnumerable<LeaguePlayer>> getChallengerLeague()
+        public async Task<IEnumerable<Summoner>> GetChallengerLeague()
         {
-            try
+            List<Summoner> summoners = new List<Summoner>();
+            RateLimiter();
+            HttpResponseMessage response = await _httpClient.GetAsync(challengerLeagues.Replace("{queue}", "RANKED_SOLO_5x5"));
+            League challenger = JsonConvert.DeserializeObject<League>(await response.Content.ReadAsStringAsync());
+            foreach(LeagueItem leagueItem in challenger.entries)
             {
-                RateLimiter();
-                HttpResponseMessage response = await _httpClient.GetAsync(challengerLeagues.Replace("{queue}", "RANKED_SOLO_5x5"));
-                if (!response.IsSuccessStatusCode)
-                {
-                    throw new ApiException();
-                }
-                League challenger = JsonConvert.DeserializeObject<League>(await response.Content.ReadAsStringAsync());
-                return challenger.entries;
+                Summoner toAdd = await GetSummoner(int.Parse(leagueItem.playerOrTeamId));
+                toAdd.leaguePoints = leagueItem.leaguePoints;
+                toAdd.losses = leagueItem.losses;
+                toAdd.wins = leagueItem.wins;
+                summoners.Add(toAdd);
             }
-            catch(ApiException ex)
-            {
-                if(retryCount < retryCountLimit)
-                {
-                    Retry();
-                }
-                else
-                {
-                    return new List<LeaguePlayer>();
-                }
-            }
+            return summoners;
         }
 
-        public async Task<IEnumerable<Match>> GetMatchList(int accountId)
+        public async Task<IEnumerable<Summoner>> GetMasterLeague()
+        {
+            List<Summoner> summoners = new List<Summoner>();
+            RateLimiter();
+            HttpResponseMessage response = await _httpClient.GetAsync(masterLeagues.Replace("{queue}", "RANKED_SOLO_5x5"));
+            League challenger = JsonConvert.DeserializeObject<League>(await response.Content.ReadAsStringAsync());
+            foreach (LeagueItem leagueItem in challenger.entries)
+            {
+                Summoner toAdd = await GetSummoner(int.Parse(leagueItem.playerOrTeamId));
+                toAdd.leaguePoints = leagueItem.leaguePoints;
+                toAdd.losses = leagueItem.losses;
+                toAdd.wins = leagueItem.wins;
+                summoners.Add(toAdd);
+            }
+            return summoners;
+        }
+
+        public async Task<IEnumerable<Match>> GetMatchList(long accountId)
         {
             int beginIndex = 0;
             List<Match> matchList = new List<Match>();
@@ -70,7 +78,9 @@ namespace DataScraper
                 RateLimiter();
                 HttpResponseMessage response = await _httpClient.GetAsync(queryParamedUri);
                 var matchListResponse = JsonConvert.DeserializeObject<MatchList>(await response.Content.ReadAsStringAsync());
-                matchBatch.AddRange(matchListResponse.matches);
+                foreach(MatchReference matchReference in matchListResponse.matches){
+                    matchBatch.Add(await GetMatch(matchReference.gameId));
+                }
                 matchList.AddRange(matchBatch);
                 beginIndex += 100;
             } while (matchBatch.Count == 100);
@@ -78,22 +88,30 @@ namespace DataScraper
             return matchList;
         }
 
-        public async Task<IEnumerable<Match>> GetRecentMatchList(int accountId)
+        public async Task<IEnumerable<Match>> GetRecentMatchList(long accountId)
         {
+            List<Match> matchList = new List<Match>();
             RateLimiter();
             HttpResponseMessage response = await _httpClient.GetAsync(recentMatchListEndpoint.Replace("{accountId}",""+accountId));
             var matchListResponse = JsonConvert.DeserializeObject<MatchList>(await response.Content.ReadAsStringAsync());
-            return matchListResponse.matches;
+            foreach (MatchReference matchReference in matchListResponse.matches)
+            {
+                if (matchReference != null && matchReference.queue == 420 && matchReference.season == 11)
+                {
+                    matchList.Add(await GetMatch(matchReference.gameId));
+                }
+            }
+            return matchList;
         }
 
-        public async Task<Match> GetMatch(int gameId)
+        public async Task<Match> GetMatch(long gameId)
         {
             RateLimiter();
             HttpResponseMessage response = await _httpClient.GetAsync(matchEndpoint.Replace("{matchId}", "" + gameId));
             return JsonConvert.DeserializeObject<Match>(await response.Content.ReadAsStringAsync());
         }
 
-        public async Task<Summoner> GetSummoner(int summonerId)
+        public async Task<Summoner> GetSummoner(long summonerId)
         {
             RateLimiter();
             HttpResponseMessage response = await _httpClient.GetAsync(summonerEndpoint.Replace("{summonerId}", "" + summonerId));
@@ -101,9 +119,13 @@ namespace DataScraper
         }
         private void RateLimiter()
         {
-            if (limiter > 10)
+            if(limiter % 5 == 0)
             {
-                System.Threading.Thread.Sleep(60000);
+                System.Threading.Thread.Sleep(1000);
+            }
+            if (limiter > 95)
+            {
+                System.Threading.Thread.Sleep(120000);
                 limiter = 0;
             }
             limiter++;

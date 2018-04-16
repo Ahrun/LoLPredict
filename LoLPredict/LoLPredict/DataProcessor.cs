@@ -47,7 +47,7 @@ namespace DataScraper
             return matchModel;
         }
 
-        public List<Object> BuildPlayerStats(long summonerId, string playerName, int leaguePoints, List<Match> matches)
+        public List<Object> BuildPlayerStats(long summonerId, string playerName, long leaguePoints, List<Match> matches)
         {
             Dictionary<int, List<Match>> playerChampionStats = new Dictionary<int, List<Match>>();
             int wins = 0, losses = 0;
@@ -104,8 +104,8 @@ namespace DataScraper
         public PlayerChampionStats BuildPlayerChampionStats(long summonerId, int championId, List<Match> matches)
         {
             int wins = 0, losses = 0;
-            int totalKills = 0, totalDeaths = 0, totalAssists = 0;
-            int totalCs = 0, totalWardsPlaced = 0, totalWardsKilled = 0;
+            float totalKills = 0, totalDeaths = 0, totalAssists = 0;
+            float totalCs = 0, totalWardsPlaced = 0, totalWardsKilled = 0;
             long totalGameTime = 0;
             foreach(Match match in matches)
             {
@@ -138,7 +138,7 @@ namespace DataScraper
             {
                 championId = championId,
                 csPerMinute = totalCs / (totalGameTime / 60),
-                kda = (totalKills + totalAssists) / (.0f + totalDeaths),
+                kda = (totalKills + totalAssists) / (totalDeaths),
                 wardsPlacedPerMinute = totalWardsPlaced / (totalGameTime / 60),
                 wardsKilledPerMinute = totalWardsKilled / (totalGameTime / 60),
                 summonerId = summonerId,
