@@ -98,14 +98,84 @@ namespace DataScraper
             _sqlConnection.Close();
         }
 
-        public MatchModel ReadMatch(long matchId)
+        public List<MatchModel> ReadMatches()
         {
-            return new MatchModel();
+            List<MatchModel> matches = new List<MatchModel>();
+            _sqlConnection.Open();
+            string selectMatchSQL = "SELECT * FROM match";
+            try
+            {
+                SQLiteDataReader reader = new SQLiteCommand(selectMatchSQL, _sqlConnection).ExecuteReader();
+                reader.Read();
+                do
+                {
+                    matches.Add(new MatchModel
+                    {
+                        matchId = reader.GetInt64(0),
+                        summoner1 = reader.GetInt64(1),
+                        summoner2 = reader.GetInt64(2),
+                        summoner3 = reader.GetInt64(3),
+                        summoner4 = reader.GetInt64(4),
+                        summoner5 = reader.GetInt64(5),
+                        summoner6 = reader.GetInt64(6),
+                        summoner7 = reader.GetInt64(7),
+                        summoner8 = reader.GetInt64(8),
+                        summoner9 = reader.GetInt64(9),
+                        summoner10 = reader.GetInt64(10),
+                        champion1 = reader.GetInt32(11),
+                        champion2 = reader.GetInt32(12),
+                        champion3 = reader.GetInt32(13),
+                        champion4 = reader.GetInt32(14),
+                        champion5 = reader.GetInt32(15),
+                        champion6 = reader.GetInt32(16),
+                        champion7 = reader.GetInt32(17),
+                        champion8 = reader.GetInt32(18),
+                        champion9 = reader.GetInt32(19),
+                        champion10 = reader.GetInt32(20),
+                        sideWin = reader.GetInt32(21),
+                        ban1 = reader.GetInt32(22),
+                        ban2 = reader.GetInt32(23),
+                        ban3 = reader.GetInt32(24),
+                        ban4 = reader.GetInt32(25),
+                        ban5 = reader.GetInt32(26),
+                        ban6 = reader.GetInt32(27),
+                        ban7 = reader.GetInt32(28),
+                        ban8 = reader.GetInt32(29),
+                        ban9 = reader.GetInt32(30),
+                        ban10 = reader.GetInt32(31),
+                    });
+                    
+                } while (reader.Read());
+            }
+            catch (Exception e){ }
+            _sqlConnection.Close();
+            return matches;
         }
 
-        public PlayerStats ReadPlayerStats(long summonerId)
+        public List<PlayerStats> ReadPlayerStats()
         {
-            return new PlayerStats();
+            List<PlayerStats> players = new List<PlayerStats>();
+            _sqlConnection.Open();
+            string selectPlayerStatsSQL = "SELECT * FROM playerStats";
+            try
+            {
+                SQLiteDataReader reader = new SQLiteCommand(selectPlayerStatsSQL, _sqlConnection).ExecuteReader();
+                reader.Read();
+                do
+                {
+                    players.Add(new PlayerStats
+                    {
+                        summonerId = reader.GetInt64(0),
+                        playerName = reader.GetString(1),
+                        leaguePoints = reader.GetInt32(2),
+                        wins = reader.GetInt32(3),
+                        losses = reader.GetInt32(4)
+                    });
+                } while (reader.Read());
+            }
+            catch (Exception e){ }
+            _sqlConnection.Close();
+            return players;
         }
 
         public PlayerChampionStats ReadPlayerChampionStats(long summonerId, int championId)
