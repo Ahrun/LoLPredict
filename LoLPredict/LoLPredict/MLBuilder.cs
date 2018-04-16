@@ -7,6 +7,7 @@ namespace DataScraper
 {
     public class MLBuilder
     {
+        TFGraph graph = new TFGraph();
         public MLBuilder()
         {
 
@@ -14,6 +15,7 @@ namespace DataScraper
 
         public void NeuralNetTest(List<Match> matches, List<PlayerStats> playerStats)
         {
+            graph.Seed = 100;
 
         }
         

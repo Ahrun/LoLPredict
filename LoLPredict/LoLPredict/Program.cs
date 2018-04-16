@@ -59,6 +59,8 @@ namespace LoLPredict
             //}
             List<MatchModel> matches = databaseAccess.ReadMatches();
             List <PlayerStats> players = databaseAccess.ReadPlayerStats();
+
+            dataProcessor.GenerateNeutralNetInputs(matches, players);
         }
     }
 }

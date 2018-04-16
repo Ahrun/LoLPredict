@@ -1,6 +1,8 @@
 ﻿using DataScraper.Models;
+using ServiceStack.Text;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace DataScraper
@@ -146,6 +148,114 @@ namespace DataScraper
                 losses = losses
             };
             return playerChampionStats;
+        }
+
+        public void GenerateNeutralNetInputs(List<MatchModel> matches, List<PlayerStats> playerStats)
+        {
+            List<NeuralNetInput> neuralNetInputs = new List<NeuralNetInput>();
+            List<int> neuralNetOutputs = new List<int>();
+            foreach(MatchModel matchModel in matches)
+            {
+                NeuralNetInput input = new NeuralNetInput();
+                input.champions = new Dictionary<int, int>();
+                input.bans = new Dictionary<int, int>();
+
+                foreach(PlayerStats playerStat in playerStats)
+                {
+                    if (playerStat.summonerId == matchModel.summoner1)
+                    {
+                        input.summoner1wl = ((float)playerStat.wins) / ((float)playerStat.losses);
+                        input.summoner1lp = playerStat.leaguePoints;
+                    }
+                    if (playerStat.summonerId == matchModel.summoner2)
+                    {
+                        input.summoner2wl = ((float)playerStat.wins) / ((float)playerStat.losses);
+                        input.summoner2lp = playerStat.leaguePoints;
+                    }
+                    if (playerStat.summonerId == matchModel.summoner3)
+                    {
+                        input.summoner3wl = ((float)playerStat.wins) / ((float)playerStat.losses);
+                        input.summoner3lp = playerStat.leaguePoints;
+                    }
+                    if (playerStat.summonerId == matchModel.summoner4)
+                    {
+                        input.summoner4wl = ((float)playerStat.wins) / ((float)playerStat.losses);
+                        input.summoner4lp = playerStat.leaguePoints;
+                    }
+                    if (playerStat.summonerId == matchModel.summoner5)
+                    {
+                        input.summoner5wl = ((float)playerStat.wins) / ((float)playerStat.losses);
+                        input.summoner5lp = playerStat.leaguePoints;
+                    }
+                    if (playerStat.summonerId == matchModel.summoner6)
+                    {
+                        input.summoner6wl = ((float)playerStat.wins) / ((float)playerStat.losses);
+                        input.summoner6lp = playerStat.leaguePoints;
+                    }
+                    if (playerStat.summonerId == matchModel.summoner7)
+                    {
+                        input.summoner7wl = ((float)playerStat.wins) / ((float)playerStat.losses);
+                        input.summoner7lp = playerStat.leaguePoints;
+                    }
+                    if (playerStat.summonerId == matchModel.summoner8)
+                    {
+                        input.summoner8wl = ((float)playerStat.wins) / ((float)playerStat.losses);
+                        input.summoner8lp = playerStat.leaguePoints;
+                    }
+                    if (playerStat.summonerId == matchModel.summoner9)
+                    {
+                        input.summoner9wl = ((float)playerStat.wins) / ((float)playerStat.losses);
+                        input.summoner9lp = playerStat.leaguePoints;
+                    }
+                    if (playerStat.summonerId == matchModel.summoner10)
+                    {
+                        input.summoner10wl = ((float)playerStat.wins) / ((float)playerStat.losses);
+                        input.summoner10lp = playerStat.leaguePoints;
+                    }
+                }
+                if (input.summoner1wl == 0f) { input.summoner1wl = 0.5f; input.summoner1lp = 0; }
+                if (input.summoner2wl == 0f) { input.summoner2wl = 0.5f; input.summoner2lp = 0; }
+                if (input.summoner3wl == 0f) { input.summoner3wl = 0.5f; input.summoner3lp = 0; }
+                if (input.summoner4wl == 0f) { input.summoner4wl = 0.5f; input.summoner4lp = 0; }
+                if (input.summoner5wl == 0f) { input.summoner5wl = 0.5f; input.summoner5lp = 0; }
+                if (input.summoner6wl == 0f) { input.summoner6wl = 0.5f; input.summoner6lp = 0; }
+                if (input.summoner7wl == 0f) { input.summoner7wl = 0.5f; input.summoner7lp = 0; }
+                if (input.summoner8wl == 0f) { input.summoner8wl = 0.5f; input.summoner8lp = 0; }
+                if (input.summoner9wl == 0f) { input.summoner9wl = 0.5f; input.summoner9lp = 0; }
+                if (input.summoner10wl == 0f) { input.summoner10wl = 0.5f; input.summoner10lp = 0; }
+
+                foreach(Champion champ in Enum.GetValues(typeof(Champion)))
+                {
+                    input.champions[(int)champ] = 0;
+                    input.bans[(int)champ] = 0;
+                }
+                input.champions[matchModel.champion1] = 1;
+                input.champions[matchModel.champion2] = 1;
+                input.champions[matchModel.champion3] = 1;
+                input.champions[matchModel.champion4] = 1;
+                input.champions[matchModel.champion5] = 1;
+                input.champions[matchModel.champion6] = 1;
+                input.champions[matchModel.champion7] = 1;
+                input.champions[matchModel.champion8] = 1;
+                input.champions[matchModel.champion9] = 1;
+                input.champions[matchModel.champion10] = 1;
+
+                input.bans[matchModel.ban1] = 1;
+                input.bans[matchModel.ban2] = 1;
+                input.bans[matchModel.ban3] = 1;
+                input.bans[matchModel.ban4] = 1;
+                input.bans[matchModel.ban5] = 1;
+                input.bans[matchModel.ban6] = 1;
+                input.bans[matchModel.ban7] = 1;
+                input.bans[matchModel.ban8] = 1;
+                input.bans[matchModel.ban9] = 1;
+                input.bans[matchModel.ban10] = 1;
+
+                neuralNetInputs.Add(input);
+                neuralNetOutputs.Add(matchModel.sideWin);
+            }
+            File.WriteAllText("X.csv",CsvSerializer.SerializeToCsv<NeuralNetInput>(neuralNetInputs));
+            File.WriteAllText("Y.csv", CsvSerializer.SerializeToCsv<int>(neuralNetOutputs));
         }
     }
 }
